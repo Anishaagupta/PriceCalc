@@ -1,8 +1,9 @@
 import React, {useState} from "react";
 import {productData} from "../data/index";
-
+import {Select, Table} from "antd";
 const HomeScreen = () => {
   const [productPrice1, setProductPrice1] = useState("");
+  const [productPrice1Name, setProductPrice1Name] = useState("");
   const [productPrice2, setProductPrice2] = useState("");
   const [productPrice3, setProductPrice3] = useState("");
   const [productPrice4, setProductPrice4] = useState("");
@@ -96,23 +97,94 @@ const HomeScreen = () => {
     );
     document.getElementById(
       "demo"
-    ).innerHTML = `Total Price Of All Selected Products Is ${sum}
-      `;
+    ).innerHTML = `Total Price Of All Selected Products Is <b>${sum}</b>`;
   };
+  const columns = [
+    {
+      title: "Product Image",
+      dataIndex: "Images",
+      key: "Images",
+      width: 300,
+      render: (text, record) => {
+        return (
+          <div>
+            <a href={record.Images} rel="noopener noreferrer" target={"_blank"}>
+              <img
+                src={record.Images}
+                style={{height: "80px", width: "100px"}}
+                alt="Product_Image"
+              />
+            </a>
+          </div>
+        );
+      },
+    },
+    {
+      title: "Product Name",
+      dataIndex: "ProductName",
+      key: "ProductName",
+      width: 300,
+    },
+    {
+      title: "Product Price",
+      dataIndex: "FinalPrice",
+      key: "FinalPrice",
+      width: 300,
+    },
+  ];
+  const resultImg = productData.filter(
+    data => data.FinalPrice === productPrice1
+  );
+  console.log("result", resultImg);
   return (
     <div>
       <h1>Calculator</h1>
-      <form id="myForm" onSubmit={result}>
-        <label>Please Select A Product </label>
+      {/* {productData &&
+        productData.map(x => {
+          return (
+            <>
+              {x.Images ? (
+                <>
+                  <img
+                    src={x.Images}
+                    style={{width: "100px", height: "100px"}}
+                    alt={x.ProductName}
+                  />
+                  <span style={{margin: "50px"}}>
+                    <b>{x.ProductName}</b>
+                  </span>
+                </>
+              ) : null}
+            </>
+          );
+        })} */}
+      <Table
+        dataSource={productData}
+        bordered={true}
+        style={{width: "200px", height: "100px"}}
+        size="middle"
+        columns={columns}
+        pagination={false}
+      />
+      <form
+        id="myForm"
+        onSubmit={result}
+        style={{width: "900px", height: "400px", marginLeft: "300px"}}
+      >
         <select
           onChange={handleProductValues1}
           style={{margin: "30px"}}
           name="p1"
         >
           {productData &&
-            productData.map(x => (
-              <option value={x.FinalPrice}>{x.ProductName}</option>
-            ))}
+            productData.map(x => {
+              console.log("x", x.Images);
+              return (
+                <>
+                  <option value={x.FinalPrice}>{x.ProductName}</option>
+                </>
+              );
+            })}
         </select>
         {/* {productPrice1} */}
         <select
@@ -273,9 +345,8 @@ const HomeScreen = () => {
           </b>
         ) : null}
       </span>
-      <b>
-        <p id="demo"></p>
-      </b>
+
+      <p id="demo" style={{fontSize: "24px"}}></p>
     </div>
   );
 };
