@@ -1,7 +1,7 @@
 import React from "react";
-import { Row, Form,Select,Spin} from "antd";
+import {Row, Form, Select, Spin} from "antd";
 // import { Select,  } from 'antd';
-import debounce from 'lodash/debounce';
+import debounce from "lodash/debounce";
 
 const {Option} = Select;
 
@@ -26,28 +26,28 @@ const HomePage = () => {
   function handleChange(value) {
     console.log(`selected ${value}`);
   }
-  function DebounceSelect({ fetchOptions, debounceTimeout = 800, ...props }) {
+  function DebounceSelect({fetchOptions, debounceTimeout = 800, ...props}) {
     const [fetching, setFetching] = React.useState(false);
     const [options, setOptions] = React.useState([]);
-    
+
     const fetchRef = React.useRef(0);
     const debounceFetcher = React.useMemo(() => {
-      const loadOptions = (value) => {
+      const loadOptions = value => {
         fetchRef.current += 1;
         const fetchId = fetchRef.current;
         setOptions([]);
         setFetching(true);
-        fetchOptions(value).then((newOptions) => {
+        fetchOptions(value).then(newOptions => {
           if (fetchId !== fetchRef.current) {
             // for fetch callback order
             return;
           }
-  
+
           setOptions(newOptions);
           setFetching(false);
         });
       };
-  
+
       return debounce(loadOptions, debounceTimeout);
     }, [fetchOptions, debounceTimeout]);
     return (
@@ -62,14 +62,14 @@ const HomePage = () => {
     );
   }
   async function fetchUserList(username) {
-    console.log('fetching user', username);
-    return fetch('https://randomuser.me/api/?results=5')
-      .then((response) => response.json())
-      .then((body) =>
-        body.results.map((user) => ({
+    console.log("fetching user", username);
+    return fetch("https://randomuser.me/api/?results=5")
+      .then(response => response.json())
+      .then(body =>
+        body.results.map(user => ({
           label: `${user.name.first} ${user.name.last}`,
           value: user.login.username,
-        })),
+        }))
       );
   }
   return (
@@ -89,17 +89,17 @@ const HomePage = () => {
               {children}
             </Select> */}
             <DebounceSelect
-      mode="multiple"
-      value={value}
-      placeholder="Select users"
-      fetchOptions={fetchUserList}
-      onChange={(newValue) => {
-        setValue(newValue);
-      }}
-      style={{
-        width: '100%',
-      }}
-    />
+              mode="multiple"
+              value={value}
+              placeholder="Select users"
+              fetchOptions={fetchUserList}
+              onChange={newValue => {
+                setValue(newValue);
+              }}
+              style={{
+                width: "100%",
+              }}
+            />
           </Form.Item>
         </Form>
       </Row>
